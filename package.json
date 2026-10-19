@@ -1,0 +1,1 @@
+{"name": "locust-phenology-web", "private": true, "type": "module", "scripts": {"test": "node --check assets/app.js && node --test tests/*.test.mjs"}}

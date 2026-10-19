@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {boundary,dateLabel,linked,filterDistricts,quantile,csvText,districtColor,valid} from '../assets/core.js';
+import {setLanguage} from '../assets/i18n.js';
+setLanguage('ru',false);
+const atlas=JSON.parse(fs.readFileSync(new URL('../data/atlas.json',import.meta.url)));
+const D=atlas.dashboard_districts;
+test('Non-leap calendar and fractional medians match source rules',()=>{assert.equal(boundary(125),'5 мая');assert.equal(boundary(117),'27 апреля');assert.equal(boundary(130),'10 мая');assert.equal(boundary(125.5),'6 мая');assert.equal(dateLabel(125.5),'5–6 мая');assert.equal(dateLabel(120.5),'30 апреля – 1 мая');assert.equal(dateLabel(null),'нет данных');assert.equal(boundary(null),'нет данных');});
+test('Inventory preserves 218 units, 196 linkages and 22 unassigned units',()=>{assert.equal(D.length,218);assert.equal(D.filter(linked).length,196);const unlinked=D.filter(r=>!linked(r));assert.equal(unlinked.length,22);assert.ok(unlinked.every(r=>!valid(r.median_hatch_DOY_noleap)));assert.ok(unlinked.every(r=>districtColor(r,'date')==='url(#no-link)'));});
+test('NS and absence of historical linkage remain distinct',()=>{const ns=D.filter(r=>r.LISA_class==='NS');assert.equal(ns.length,126);assert.ok(ns.every(linked));assert.ok(ns.every(r=>valid(r.median_hatch_DOY_noleap)));assert.notEqual(districtColor(ns[0],'lisa'),'url(#no-link)');});
+test('Combined filtering, Cyrillic case and impossible combinations',()=>{const target=D.find(r=>r.ADM2_RU.includes('Шортанд'));assert.ok(target);assert.equal(filterDistricts(D,{region:target.ADM1_RU,agro:target.agroclimatic_class,search:'ШОРТАНД'}).length,1);assert.equal(filterDistricts(D,{region:'nonexistent'}).length,0);assert.equal(filterDistricts(D).length,218);});
+test('CSV retains UTF-8 BOM and safely escapes quotation marks, commas and newlines',()=>{const csv=csvText([{a:'A,"Б"\nC',b:null}],[{label:'Имя',value:'a'},{label:'Дата',value:'b'}]);assert.equal(csv,'\ufeff"Имя","Дата"\r\n"A,""Б""\nC",""');});
+test('Linear quartiles handle even, odd and absent values',()=>{assert.equal(quantile([1,2,3,4],.5),2.5);assert.equal(quantile([null,1,2,3],.5),2);assert.equal(quantile([], .5),null);});
+test('National series retains all 23 years and source quartiles',()=>{const rows=atlas.dashboard_national_years;assert.equal(rows.length,23);assert.deepEqual(rows.map(r=>r.target_year),Array.from({length:23},(_,i)=>2003+i));assert.ok(rows.every(r=>r.q1_hatch_DOY_noleap<=r.median_hatch_DOY_noleap&&r.median_hatch_DOY_noleap<=r.q3_hatch_DOY_noleap));});
+test('Larval stages are the archived source values rather than fixed hatch offsets',()=>{assert.ok(D.some(r=>linked(r)&&r.stage2_median_doy-r.median_hatch_DOY_noleap!==15));assert.ok(D.some(r=>linked(r)&&r.stage3_median_doy-r.median_hatch_DOY_noleap!==25));});

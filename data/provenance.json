@@ -1,0 +1,14 @@
+{
+  "project": "IRN AP22784639",
+  "period": "2003–2025",
+  "current_administrative_units": 218,
+  "historically_linked_units": 196,
+  "unmatched_units": 22,
+  "description": "Public web display data; historical phenology reference, not a seasonal forecast.",
+  "files": {
+    "atlas.json": "be4cdb99b475c4ff9945e3fa47e3952fa7b75bc2d07377459cab0b717777f8de",
+    "map_districts_repaired.geojson": "1d209ef5be6c60a588acb0a57fa72fde52e35d08ec59e3e3cd611a17ef4c1da6",
+    "place_names_kk.json": "c528502b59fb406c32954872c26204df81d0f72c4e881e182d008fdb9ea61d1d",
+    "map_regions.geojson": "95208d17b1ae46bd582c501bc251693af4c91bdf672ffd9e1758fb97637da08b"
+  }
+}

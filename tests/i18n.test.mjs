@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {LANGUAGES,setLanguage,tr,registerPlaces} from '../assets/i18n.js';
+import {boundary,dateLabel,filterDistricts} from '../assets/core.js';
+const atlas=JSON.parse(fs.readFileSync(new URL('../data/atlas.json',import.meta.url)));
+const kk=JSON.parse(fs.readFileSync(new URL('../data/place_names_kk.json',import.meta.url)));
+const rows=atlas.dashboard_districts.map(r=>({...r,...kk[r.ADM2_PCODE]}));registerPlaces(rows);
+test('Language order is Kazakh, English, Russian',()=>assert.deepEqual(LANGUAGES.map(r=>r[0]),['kk','en','ru']));
+test('Calendar display follows the selected language without changing numeric dates',()=>{setLanguage('kk',false);assert.equal(boundary(125),'5 мамыр');assert.equal(dateLabel(125.5),'5–6 мамыр');setLanguage('en',false);assert.equal(boundary(125),'May 5');assert.equal(dateLabel(125.5),'May 5–6');setLanguage('ru',false);assert.equal(boundary(125),'5 мая');});
+test('All 218 units have Kazakh and English labels with stable identifiers',()=>{assert.equal(Object.keys(kk).length,218);assert.ok(rows.every(r=>r.ADM1_KK&&r.ADM2_KK&&r.ADM1_EN&&r.ADM2_EN));setLanguage('en',false);assert.ok(rows.every(r=>!/[А-Яа-яЁё]/.test(tr(r.ADM1_RU+' '+r.ADM2_RU))));});
+test('Search accepts names from all three languages',()=>{const r=rows.find(r=>r.ADM2_RU.includes('Шортанд'));for(const q of ['Шортанды','Shortandy','Ақмола'])assert.ok(filterDistricts(rows,{search:q}).some(x=>x.ADM2_PCODE===r.ADM2_PCODE));});
+test('Language switching restores source text and preserves category distinctions',()=>{for(const lang of ['kk','en','ru']){setLanguage(lang,false);assert.notEqual(tr('Выраженный локальный кластер не выявлен'),tr('Историческое сопоставление не установлено'));}assert.equal(tr('Карта мониторинга'),'Карта мониторинга');});
