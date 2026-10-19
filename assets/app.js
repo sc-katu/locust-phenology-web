@@ -1,6 +1,6 @@
-import {language,setLanguage,tr,registerPlaces,localizeDOM,observeTranslations} from './i18n.js';
+import {language,setLanguage,tr,registerPlaces,localizeDOM,observeTranslations} from './i18n.js?v=20261019-profile';
 setLanguage(language(),false);
-import {AGRO,AGRO_COLORS,LISA,LISA_COLORS,valid,linked,number,boundary,dateLabel,filterDistricts,quantile,csvText,districtColor,escapeHTML as esc} from './core.js';
+import {AGRO,AGRO_COLORS,LISA,LISA_COLORS,valid,linked,number,boundary,dateLabel,filterDistricts,quantile,csvText,districtColor,escapeHTML as esc} from './core.js?v=20261019-profile';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const NS='http://www.w3.org/2000/svg';
 const state={page:'map',region:'',agro:'',search:'',layer:'date',selected:null,year:2025,scale:1,x:0,y:0};

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {boundary,dateLabel,linked,filterDistricts,quantile,csvText,districtColor,valid} from '../assets/core.js';
-import {setLanguage} from '../assets/i18n.js';
+import {boundary,dateLabel,linked,filterDistricts,quantile,csvText,districtColor,valid} from '../assets/core.js?v=20261019-profile';
+import {setLanguage} from '../assets/i18n.js?v=20261019-profile';
 setLanguage('ru',false);
 const atlas=JSON.parse(fs.readFileSync(new URL('../data/atlas.json',import.meta.url)));
 const D=atlas.dashboard_districts;

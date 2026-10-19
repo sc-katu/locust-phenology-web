@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {LANGUAGES,setLanguage,tr,registerPlaces} from '../assets/i18n.js';
-import {boundary,dateLabel,filterDistricts} from '../assets/core.js';
+import {LANGUAGES,setLanguage,tr,registerPlaces} from '../assets/i18n.js?v=20261019-profile';
+import {boundary,dateLabel,filterDistricts} from '../assets/core.js?v=20261019-profile';
 const atlas=JSON.parse(fs.readFileSync(new URL('../data/atlas.json',import.meta.url)));
 const kk=JSON.parse(fs.readFileSync(new URL('../data/place_names_kk.json',import.meta.url)));
 const rows=atlas.dashboard_districts.map(r=>({...r,...kk[r.ADM2_PCODE]}));registerPlaces(rows);
